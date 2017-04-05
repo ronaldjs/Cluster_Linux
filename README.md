@@ -1,13 +1,13 @@
 
-#Guía de Implementación de Clúster MPI en el Sistema Operativo Debian
+# Guía de Implementación de Clúster MPI en el Sistema Operativo Debian
 
 El desarrollo de clúster es importante para conocer la forma en cómo se ejecutan varios procesos sobre varias maquinas (server, cliente1, cliente 2… clienteN), en otras palabras los procesos se ejecutan de forma paralela y realizan una operación determinada en cada una de las maquinas. El objetivo de la guía es llevar a cabo la simulación y creación de un clúster con dos máquinas (Server y Cliente o Master y Slave respectivamente) en el sistema operativo Debian, así como la ejecución de varios algoritmos. Los siguientes pasos serán los requisitos y la forma para crear el clúster.
 
-###1. Detalles a considerar antes de la Implementación.
+### 1. Detalles a considerar antes de la Implementación.
 
 El clúster será de tipo Beowulf que es una tecnología para agrupar computadores basados en el sistema operativo Linux para formar un supercomputador virtual paralelo. Algunos de los componentes de hardware y software que se necesitan para el clúster Beowulf se explican posteriormente.
 
-####1.1 Requerimientos de Hardware
+#### 1.1 Requerimientos de Hardware
 
 Beowulf posee una arquitectura basada en multicomputadores el cual puede ser utilizado para computación paralela. Este sistema consiste de un nodo maestro y uno o más nodos esclavos conectados a través de una red Ethernet u otra topología de red. Esta construido con componentes de hardware comunes en el mercado, similar a cualquier PC capaz de ejecutar Linux, adaptadores de Ethernet y switches estándares. Básicamente los requerimientos de hardware que utilizaremos serán los siguientes:
 
@@ -24,7 +24,7 @@ Beowulf posee una arquitectura basada en multicomputadores el cual puede ser uti
 Nota: En el caso de conexión de red o conexión con varios computadores con el objetivo de brindar servicios, será necesario buscar la información pertinente, ya que el clúster se desarrollará en un ambiente virtual con red interna.
 
 
-###1.2 Requerimientos de Software
+### 1.2 Requerimientos de Software
 
 El software que se necesitará para crear el clúster en la distribución de Debian 7, es la siguiente:
 
@@ -35,11 +35,11 @@ El software que se necesitará para crear el clúster en la distribución de Deb
 
 Nota: Para el clúster es necesario instalar los programas de SSH, NFS, SSH, MPICH2 y el compilador de C++ para Debian. Veremos la instalación de cada uno más adelante en sus correspondientes apartados.
 
-###1.3 Configuración de la red.
+### 1.3 Configuración de la red.
 
 Como el clúster se realizará en dos máquinas virtuales debemos configurar una red interna para la conexión compartida entre ambas máquinas, además se debe usar IPs estáticas en ambas máquinas como un puente de comunicación del clúster.
 
-###1.3.1 Configuración de la red interna.
+### 1.3.1 Configuración de la red interna.
 
 La red interna considera como punto vital los siguientes pasos para cada máquina.
 
@@ -52,7 +52,7 @@ b. Habilitamos el adaptador de red, y lo colocamos conectado a “Red Interna”
 
 ![Alt text](https://github.com/ronaldjs/cluster_linux/blob/master/images/imagen2.png?raw=true)
 
-###1.3.2 Configuración de las IPs estáticas.
+### 1.3.2 Configuración de las IPs estáticas.
 
 La configuración se realiza una vez que estemos adentro del sistema y está dada por los siguientes pasos.
 
@@ -68,14 +68,14 @@ c. Para terminar necesitamos escribir la dirección IP estática, en nuestro cas
 
 ![Alt text](https://github.com/ronaldjs/cluster_linux/blob/master/images/imagen5.png?raw=true)
 
-###1.3.3 Configuración para internet.
+### 1.3.3 Configuración para internet.
 
 Cuando se finaliza la configuración de las IPs estáticas, la conexión de internet será nula, debido a que modificamos la única conexión de red a internet que venía por defecto. Para configurar una nueva, debemos seguir los mismos pasos para la configuración de red interna, excepto que se debe habilitar otro adaptador (adaptador 2) y conectarlo como
 “Adaptador puente”; en el sistema debemos agregar otra conexión cableada, le colocamos un nombre y soló con eso el sistema reconoce automáticamente el adaptador y establece la conexión. Así tenemos conexión compartida entre las máquinas virtuales y acceso a internet.
 
 Nota: Realizar todo estas configuraciones para todos los nodos slaves (maquinas clientes) que conforman el master (maquina servidor).
 
-###2. Configuración interna de las IPs.
+### 2. Configuración interna de las IPs.
 
 Antes de implementar y efectuar todas las instalaciones necesarias para el clúster, debemos llevar a cabo configuraciones internas de las IPs estáticas.
 
@@ -99,9 +99,9 @@ El archivo modificado quedaría así:
 
 ![Alt text](https://github.com/ronaldjs/cluster_linux/blob/master/images/imagen7.png?raw=true)
 
-###3. Implementación del Clúster
+### 3. Implementación del Clúster
 
-###3.1 Instalación de SSH.
+### 3.1 Instalación de SSH.
 
 Terminadas todas las configuraciones de red, ahora podemos instalar el servidor SSH (Secure
 Shell) que es un protocolo usado por excelencia para establecer conexión con máquinas remotas a través de una red. De esta forma se podrá conectar el nodo master con el nodo slave solo con “ssh slave”. Los pasos para instalar y configurar SSH son los siguientes:
@@ -165,7 +165,7 @@ Nota: Si al momento de intentar ejecutar algunos de los pasos anteriores, arroja
 root@master~$ apt-get remove iptables
 ```
 
-###3.2 Instalación del NFS.
+### 3.2 Instalación del NFS.
 
 NFS (Network File System) permite que un equipo GNU/Linux pueda montar y trabajar con un sistema de archivos de otro equipo de la red como si fuera local. Basicamente, instalaremos NFS para crear una carpeta compartida entre el nodo master y los slaves, en la cual se colocarará los algoritmos para su debida ejecución.
 
@@ -222,7 +222,7 @@ root@master:/home$ service nfs-kernel- server restart
 root@master:/home$ /etc/init.d/nfs-kernel- server restart
 ```
 
-###3.2.2 Configuración para el cliente (nodo slave)
+### 3.2.2 Configuración para el cliente (nodo slave)
 
 a. Instalar el paquete nfs-common
 
@@ -262,7 +262,7 @@ f. Finalmente se debe editar el archivo fstab con nano, ya que cada vez que rein
 master:/home/NFS-Compartido /home/ NFS-Compartido nfs
 ```
 
-###3.3 Instalación y Configuración del MPICH2
+### 3.3 Instalación y Configuración del MPICH2
 
 Es recomendable utilizar el administrador de paquetes para buscar la versión más actual de MPICH para debían. Se instala mpich2 en el master y en todos los nodos esclavos.
 
@@ -286,7 +286,7 @@ Nota: el compilador por defecto en Debian es c, pero como en este caso se correr
 root@master: $ apt-get install build-essential
 ```
 
-###3.4 Correr el Código
+### 3.4 Correr el Código
 
 Todo esto se realizara en el master.
 
@@ -302,23 +302,23 @@ b. Luego, se corre el comando para poder ejecutar el ejecutable. Se indicará el
 root@master~: $ mpiexec –f /home/NFS-Compartido/hosts -n 10 /home/NFS-Compartido/ejemplo
 ```
 
-#Algoritmos Implementados
+# Algoritmos Implementados
 
-###a. Descripción
+### a. Descripción
 
-###a.1. Mergesort
+### a.1. Mergesort
 
 El algoritmo ordena un vector con números desordenados, el proceso cero (nodo master) toma el vector y el número de procesos que se van a ejecutar y reparte el vector de forma equitativa a los todos los procesos (incluyéndose). Cada proceso ordena de manera local la lista asignada, la mezcla (merge) se hace uniendo dos procesos e igual se efectúa la ordenación y así sucesivamente hasta llegar a ordenar todo el vector. Cada vez que se realiza la mescla y se ordena, un proceso dejará de trabajar de cada grupo, así por ejemplo si hay tres grupos trabajando paralelamente en la primera mezcla (es decir, 6 procesos en total), luego quedarán por fuera 3 procesos y así se hará de nuevo otra mezcla, pero como la cantidad es impar, un proceso quedará en espera por el nuevo resultado, este caso es el único que no se hace paralelo, pero en la ordenación los procesos se ejecutan de forma paralela.
 
-###a.2. Multiplicación de Matrices
+### a.2. Multiplicación de Matrices
 
 El algoritmo toma dos matrices, una matriz cuadrada (NxN) y una matriz columna (Nx1). El proceso cero (nodo master) tiene al principio las dos matrices y las llena con número aleatorios, luego reparte la filas de la matriz cuadrada a la cantidad de procesos que se van a ejecutar (el número de procesos debe ser igual a la dimensión de la matriz cuadrada). Cuando se hace la distribución, los procesos hacen las operaciones de la fila por la matriz columna y al final manda el resultado a proceso cero, quien muestra el resultado final.
 
-###a.3. Factorización de números primos
+### a.3. Factorización de números primos
 
 El algoritmo realiza la ejecución paralela únicamente con uno o dos procesos, si es un proceso, entonces lo ejecuta de manera secuencial, en caso contrario, los primos del número a factorizar son obtenidos de manera paralela, donde cada proceso (de los dos que existen) sincroniza sus resultados para encontrar los números primos. La operación se realiza a través de una variable compartida, que contendrá el número y sus factores equivalentes.
 
-###b. Prueba de Ejecución de los Algoritmos
+### b. Prueba de Ejecución de los Algoritmos
 
 ###b.1. Mergesort
 
@@ -330,7 +330,7 @@ b. Ejecución del algoritmo y resultados
 
 ![Alt text](https://github.com/ronaldjs/cluster_linux/blob/master/images/imagen9.png?raw=true)
 
-###b.2. Multiplicación de Matrices
+### b.2. Multiplicación de Matrices
 
 a. Compilación correcta del Código
 
@@ -340,7 +340,7 @@ b. Ejecución del algoritmo y resultados
 
 ![Alt text](https://github.com/ronaldjs/cluster_linux/blob/master/images/imagen11.png?raw=true)
 
-###b.3. Factorización de números primos
+### b.3. Factorización de números primos
 
 Ejecución del algoritmo y resultados
 
