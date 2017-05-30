@@ -169,7 +169,7 @@ root@master~$ apt-get remove iptables
 
 NFS (Network File System) permite que un equipo GNU/Linux pueda montar y trabajar con un sistema de archivos de otro equipo de la red como si fuera local. Basicamente, instalaremos NFS para crear una carpeta compartida entre el nodo master y los slaves, en la cual se colocarará los algoritmos para su debida ejecución.
 
-###3.2.1 Configuración para el servidor (nodo master)
+### 3.2.1 Configuración para el servidor (nodo master)
 
 a. Instalar el paquete nfs-kernel- server
 
@@ -271,7 +271,7 @@ root@master: $ apt-get install mpich2
 root @slave: $ apt-get install mpich2
 ```
 
-###Configurar en el master:
+### Configurar en el master:
 
 Listar los nodos que participaran en el cluster en el archivo /home/compartido/hosts. Este archivo se ubicara dentro de la carpeta compartida y no es necesaria una extensión, el archivo debe ser creado y se debe ingresar en él mismo, la siguiente información. Se puede ingresar la dirección IP para evitar cualquier confusión con los nombres en los hosts, si no sirviera de una manera probar de la otra. Como el archivo se encontrará en la carpeta compartida que creamos no es necesario definir nada en el esclavo porque este utilizará el mismo archivo.
 
@@ -320,7 +320,7 @@ El algoritmo realiza la ejecución paralela únicamente con uno o dos procesos, 
 
 ### b. Prueba de Ejecución de los Algoritmos
 
-###b.1. Mergesort
+### b.1. Mergesort
 
 a. Compilación correcta del Código
 
